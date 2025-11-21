@@ -1,0 +1,29 @@
+{
+  "name": "@rntu-visit/api",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "type": "module",
+  "scripts": {},
+  "devDependencies": {
+    "@rntu-visit/config": "workspace:*"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@trpc/server": "catalog:",
+    "@trpc/client": "catalog:",
+    "next": "catalog:",
+    "drizzle-orm": "catalog:",
+    "dotenv": "catalog:",
+    "zod": "catalog:",
+    "@rntu-visit/auth": "workspace:*",
+    "@rntu-visit/db": "workspace:*"
+  }
+}
