@@ -1,0 +1,49 @@
+"use client";
+
+import { MenuItem, MenuContainer } from "@/components/ui/fluid-menu";
+import {
+  Menu as MenuIcon,
+  X,
+  Home,
+  Mail,
+  User,
+  Settings,
+  MapPin,
+} from "lucide-react";
+import Link from "next/link";
+import UserMenu from "./user-menu";
+import { ModeToggle } from "./mode-toggle";
+
+// A fluid circular menu that elegantly expands to reveal navigation items with smooth icon transitions
+export function MenuDemo() {
+  return (
+    <div className="flex flex-col items-center gap-8 p-8">
+      <div className="relative">
+        <div className="absolute inset-0 bg-linear-to-b from-gray-900/10 to-transparent dark:from-gray-100/10 blur-3xl -z-10 rounded-full" />
+        <MenuContainer>
+          <MenuItem
+            icon={
+              <div className="relative w-6 h-6">
+                <div className="absolute inset-0 transition-all duration-300 ease-in-out origin-center opacity-100 scale-100 rotate-0 [div[data-expanded=true]_&]:opacity-0 [div[data-expanded=true]_&]:scale-0 [div[data-expanded=true]_&]:rotate-180">
+                  <MenuIcon size={24} strokeWidth={1.5} />
+                </div>
+                <div className="absolute inset-0 transition-all duration-300 ease-in-out origin-center opacity-0 scale-0 -rotate-180 [div[data-expanded=true]_&]:opacity-100 [div[data-expanded=true]_&]:scale-100 [div[data-expanded=true]_&]:rotate-0">
+                  <X size={24} strokeWidth={1.5} />
+                </div>
+              </div>
+            }
+          />
+          <Link href="/">
+            <MenuItem icon={<Home size={24} strokeWidth={1.5} />} />
+          </Link>
+          <Link href="/locator">
+            <MenuItem icon={<MapPin size={24} strokeWidth={1.5} />} />
+          </Link>
+          <MenuItem>
+            <ModeToggle />
+          </MenuItem>
+        </MenuContainer>
+      </div>
+    </div>
+  );
+}
