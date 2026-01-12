@@ -26,6 +26,7 @@
     "leaflet-draw": "^1.0.4",
     "leaflet.markercluster": "^1.5.3",
     "lucide-react": "^0.546.0",
+    "motion": "^12.26.1",
     "next": "catalog:",
     "next-themes": "^0.4.6",
     "ogl": "^1.0.11",
