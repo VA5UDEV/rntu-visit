@@ -1,8 +1,16 @@
-# rntu-visit
+# 📍 Campus Map – Interactive Map
 
-This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack that combines Next.js, Self, TRPC, and more.
+This project displays an interactive map of the RNTU campus with labeled markers such as academic buildings, hostels, sports areas, and gates. It is built using React + TypeScript + Leaflet (React-Leaflet).
 
-## Features
+## 🚀 Features
+
+- Interactive map with zoom & pan
+- Clickable markers for all campus locations
+- Building names with tooltips/popups
+- Organized coordinates with LatLngExpression support
+- Easy to add/update new locations
+
+## Tech Stack
 
 - **TypeScript** - For type safety and improved developer experience
 - **Next.js** - Full-stack React framework
