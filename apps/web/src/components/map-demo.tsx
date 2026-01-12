@@ -9,12 +9,16 @@ import {
   MapMarker,
   MapMarkerClusterGroup,
   MapRectangle,
+  MapSearchControl,
   MapTileLayer,
   MapTooltip,
   MapZoomControl,
 } from "@/components/ui/map";
 import type { LatLngExpression, LatLngBoundsExpression } from "leaflet";
+import { MapPinIcon } from "lucide-react";
 import { toast } from "sonner";
+import { useMap } from "react-leaflet";
+import React from "react";
 
 export function MapDemo() {
   const TORONTO_COORDINATES = [23.133332, 77.563837] satisfies LatLngExpression;
@@ -145,12 +149,41 @@ export function MapDemo() {
           </MapMarkerClusterGroup>
         </MapLayerGroup>
       </MapLayers>
-      <MapZoomControl />
-      <MapLocateControl
-        watch
-        onLocationError={(error) => toast.error(error.message)}
-        className="bottom-5"
-      />
+      <MapSearchControlWrapper />
+      <div className="absolute right-1 bottom-5 z-1000 grid gap-1">
+        <MapLocateControl
+          className="static"
+          watch
+          onLocationError={(error) => toast.error(error.message)}
+        />
+        <MapZoomControl className="static" />
+      </div>
     </Map>
+  );
+}
+
+function MapSearchControlWrapper() {
+  const map = useMap();
+  const [selectedPosition, setSelectedPosition] =
+    React.useState<LatLngExpression | null>(null);
+
+  React.useEffect(() => {
+    if (!selectedPosition) return;
+    map.panTo(selectedPosition);
+  }, [selectedPosition]);
+
+  return (
+    <>
+      <MapSearchControl
+        onPlaceSelect={(feature) =>
+          setSelectedPosition(
+            feature.geometry.coordinates.toReversed() as LatLngExpression
+          )
+        }
+      />
+      {selectedPosition && (
+        <MapMarker position={selectedPosition} icon={<MapPinIcon />} />
+      )}
+    </>
   );
 }

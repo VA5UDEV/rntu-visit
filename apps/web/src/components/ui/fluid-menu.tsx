@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 interface MenuProps {
@@ -82,7 +82,7 @@ export function MenuItem({
       role="menuitem"
       onClick={onClick}
     >
-      <span className="flex items-center justify-center h-full mt-[5%]">
+      <span className="flex items-center justify-center h-full leading-none">
         {icon && (
           <span className="h-6 w-6 transition-all duration-200 group-hover:[&_svg]:stroke-[2.5]">
             {icon}
@@ -125,13 +125,10 @@ export function MenuContainer({ children }: { children: React.ReactNode }) {
             key={index}
             className="absolute top-0 left-0 w-16 h-16 bg-gray-100 dark:bg-gray-800 will-change-transform"
             style={{
-              transform: `translateY(${isExpanded ? (index + 1) * 48 : 0}px)`,
+              transform: `translateX(${isExpanded ? -(index + 1) * 48 : 0}px)`,
               opacity: isExpanded ? 1 : 0,
               zIndex: 40 - index,
-              clipPath:
-                index === childrenArray.length - 2
-                  ? "circle(50% at 50% 50%)"
-                  : "circle(50% at 50% 55%)",
+              clipPath: "circle(50% at 50% 50%)",
               transition: `transform ${
                 isExpanded ? "300ms" : "300ms"
               } cubic-bezier(0.4, 0, 0.2, 1),
