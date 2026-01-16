@@ -4,9 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
-import type { Route } from "next";
 
-export function LetsWorkTogether() {
+export function Hero() {
   const router = useRouter();
   const [exit, setExit] = useState(false);
 
@@ -113,11 +112,11 @@ export function LetsWorkTogether() {
                 className="mt-8 flex flex-col items-center gap-4 text-center"
               >
                 <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
-                  Explore real-time geospatial data for buildings, facilities,
+                  Explore real-time geospatial data for buildings, facilities,<br />
                   and services across the RNTU campus.
                 </p>
                 <span className="text-xs tracking-widest uppercase text-muted-foreground/60">
-                  Powered by RNTU student innovation
+                  View Source on <a target="_blank" href ="https://github.com/VA5UDEV/rntu-visit"><div className="underline">GitHub</div></a>
                 </span>
               </motion.div>
             </>
