@@ -38,17 +38,22 @@ export default function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="rounded-full w-16 h-16 bg-transparent flex items-center justify-center text-xl"
-        >
-          {session ? (
-            session.user.name?.charAt(0).toUpperCase()
-          ) : (
-            <AtSign className="w-8 h-8" strokeWidth={1.5} />
-          )}
-        </Button>
-      </DropdownMenuTrigger>
+  <Button
+    variant="ghost"
+    className="rounded-full w-16 h-16 p-0 bg-transparent flex items-center justify-center"
+  >
+    {session.user.image ? (
+      <img
+        src={session.user.image}
+        alt="Avatar"
+        className="w-full h-full rounded-full object-cover"
+      />
+    ) : (
+      session.user.name?.charAt(0).toUpperCase()
+    )}
+  </Button>
+</DropdownMenuTrigger>
+
       <DropdownMenuContent className="bg-card">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
