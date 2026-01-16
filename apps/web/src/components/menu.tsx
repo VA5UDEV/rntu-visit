@@ -17,7 +17,7 @@ import { ModeToggle } from "./mode-toggle";
 // A fluid circular menu that elegantly expands to reveal navigation items with smooth icon transitions
 export function MenuDemo() {
   return (
-    <div className="flex flex-col items-center gap-8 p-8">
+    <div className="flex flex-col items-center gap-8 p-4">
       <div className="relative">
         <div className="absolute inset-0 bg-linear-to-b from-gray-900/10 to-transparent dark:from-gray-100/10 blur-3xl -z-10 rounded-full" />
         <MenuContainer>
@@ -33,12 +33,7 @@ export function MenuDemo() {
               </div>
             }
           />
-          <Link href="/">
-            <MenuItem icon={<Home size={24} strokeWidth={1.5} />} />
-          </Link>
-          <Link href="/locator">
-            <MenuItem icon={<MapPin size={24} strokeWidth={1.5} />} />
-          </Link>
+          <UserMenu />
           <MenuItem>
             <ModeToggle />
           </MenuItem>
