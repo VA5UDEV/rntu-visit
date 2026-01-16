@@ -1,9 +1,34 @@
+import { redirect } from "next/navigation";
+import { headers } from "next/headers";
+import { auth } from "@rntu-visit/auth";
 import { MapDemo } from "@/components/map-demo";
+import { RntuLogo } from "@/components/rntu-logo";
 
-export default function MapDemoPage() {
+import Link from "next/link";
+
+export default async function MapDemoPage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) {
+    redirect("/login");
+  }
+
   return (
-    <div className="h-[85%] w-[95%] mt-28 mx-auto">
-      <MapDemo />
+    <div className="flex flex-col min-h-screen">
+      {/* Header */}
+      <header className="flex items-center justify-between px-6 py-6 border-b">
+        <Link href="/" className="hover:opacity-80 transition">
+          <RntuLogo />
+        </Link>
+      </header>
+
+      {/* Main */}
+      <div className="h-[85%] w-[95%] mt-6 mx-auto">
+        <MapDemo />
+        
+      </div>
     </div>
   );
 }
