@@ -33,10 +33,10 @@ export function MenuDemo() {
               </div>
             }
           />
-          <UserMenu />
           <MenuItem>
             <ModeToggle />
           </MenuItem>
+          <UserMenu />
         </MenuContainer>
       </div>
     </div>
