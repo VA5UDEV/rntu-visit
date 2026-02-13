@@ -9,4 +9,4 @@ catalog:
   dotenv: ^17.2.2
   drizzle-orm: ^0.44.2
   next: 16.1.0
-  zod: 'catalog:'
+  zod: ^4.1.12
