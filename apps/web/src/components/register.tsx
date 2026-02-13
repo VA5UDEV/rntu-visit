@@ -16,7 +16,6 @@ import { cn } from "@/lib/utils";
 
 export default function SignIn() {
   const [loading, setLoading] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
 
   return (
     <Card className="max-w-md">
