@@ -1,20 +1,10 @@
 "use client";
 
 import { MenuItem, MenuContainer } from "@/components/ui/fluid-menu";
-import {
-  Menu as MenuIcon,
-  X,
-  Home,
-  Mail,
-  User,
-  Settings,
-  MapPin,
-} from "lucide-react";
-import Link from "next/link";
+import { Menu as MenuIcon, X } from "lucide-react";
 import UserMenu from "./user-menu";
 import { ModeToggle } from "./mode-toggle";
 
-// A fluid circular menu that elegantly expands to reveal navigation items with smooth icon transitions
 export function MenuDemo() {
   return (
     <div className="flex flex-col items-center gap-8 p-4">
