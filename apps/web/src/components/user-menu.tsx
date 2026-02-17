@@ -1,3 +1,5 @@
+"use client";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,75 +8,122 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ModeToggle } from "@/components/mode-toggle";
 import { authClient } from "@/lib/auth-client";
-import { Button } from "./ui/button";
-import { Skeleton } from "./ui/skeleton";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { AtSign } from "lucide-react";
+import { AtSign, LogOut, Mail, User } from "lucide-react";
 
 export default function UserMenu() {
   const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
 
   if (isPending) {
-    return <Skeleton className="h-9 w-24" />;
+    return <Skeleton className="h-10 w-10 rounded-full" />;
   }
 
   if (!session) {
     return (
       <Button
         variant="ghost"
-        className="rounded-full w-16 h-16 bg-transparent flex items-center justify-center"
+        size="icon"
+        className="rounded-full h-10 w-10"
         asChild
       >
-        <Link href="/login">
-          <AtSign size={24} strokeWidth={1.5} />
+        <Link href="/login" aria-label="Sign in">
+          <AtSign size={18} strokeWidth={1.5} />
         </Link>
       </Button>
     );
   }
 
+  const initials =
+    session.user.name
+      ?.split(" ")
+      .map((n) => n[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase() ?? "U";
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-  <Button
-    variant="ghost"
-    className="rounded-full w-16 h-16 p-0 bg-transparent flex items-center justify-center"
-  >
-    {session.user.image ? (
-      <img
-        src={session.user.image}
-        alt="Avatar"
-        className="w-full h-full rounded-full object-cover"
-      />
-    ) : (
-      session.user.name?.charAt(0).toUpperCase()
-    )}
-  </Button>
-</DropdownMenuTrigger>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="rounded-full h-10 w-10 p-0 ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          aria-label="User menu"
+        >
+          <Avatar className="h-8 w-8">
+            <AvatarImage
+              src={session.user.image ?? undefined}
+              alt={session.user.name ?? "User"}
+            />
+            <AvatarFallback className="text-xs font-semibold bg-muted text-muted-foreground">
+              {initials}
+            </AvatarFallback>
+          </Avatar>
+        </Button>
+      </DropdownMenuTrigger>
 
-      <DropdownMenuContent className="bg-card">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+      <DropdownMenuContent
+        align="end"
+        side="top"
+        sideOffset={12}
+        className="w-52 bg-card border-border/60 shadow-md mb-1"
+      >
+        <DropdownMenuLabel className="pb-1">
+          <p className="text-sm font-semibold leading-none">
+            {session.user.name}
+          </p>
+          <p className="text-xs text-muted-foreground mt-1 truncate">
+            {session.user.email}
+          </p>
+        </DropdownMenuLabel>
+
         <DropdownMenuSeparator />
-        <DropdownMenuItem>{session.user.name}</DropdownMenuItem>
-        <DropdownMenuItem>{session.user.email}</DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Button
-            variant="destructive"
-            className="w-full"
-            onClick={() => {
-              authClient.signOut({
-                fetchOptions: {
-                  onSuccess: () => {
-                    router.push("/");
-                  },
-                },
-              });
-            }}
-          >
-            Sign Out
-          </Button>
+
+        <DropdownMenuItem
+          className="gap-2 text-xs text-muted-foreground cursor-default"
+          disabled
+        >
+          <User className="h-3.5 w-3.5" />
+          {session.user.name}
+        </DropdownMenuItem>
+
+        <DropdownMenuItem
+          className="gap-2 text-xs text-muted-foreground cursor-default"
+          disabled
+        >
+          <Mail className="h-3.5 w-3.5" />
+          <span className="truncate">{session.user.email}</span>
+        </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+
+        {/* Theme toggle row */}
+        <div className="flex items-center justify-between px-2 py-1.5">
+          <span className="text-xs text-muted-foreground">Theme</span>
+          <ModeToggle />
+        </div>
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuItem
+          className="gap-2 text-xs text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer"
+          onClick={() => {
+            authClient.signOut({
+              fetchOptions: {
+                onSuccess: () => router.push("/"),
+              },
+            });
+          }}
+        >
+          <LogOut className="h-3.5 w-3.5" />
+          Sign Out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
