@@ -13,7 +13,7 @@ export function Hero() {
 
   const handleClick = () => {
     setExit(true);
-    setTimeout(() => router.push("/onboarding" as any), 600);
+    setTimeout(() => router.push("/login/onboarding" as any), 600);
   };
 
   return (
