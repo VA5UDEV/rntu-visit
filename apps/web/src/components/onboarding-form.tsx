@@ -13,14 +13,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { trpc } from "@/utils/trpc";
+import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const PURPOSE_OPTIONS = [
   { value: "academic", label: "Academic Visit" },
   { value: "research", label: "Research Collaboration" },
-  { value: "conference", label: "Conference/Seminar" },
+  { value: "conference", label: "Conference / Seminar" },
   { value: "recruitment", label: "Recruitment" },
   { value: "meeting", label: "Official Meeting" },
   { value: "event", label: "Campus Event" },
@@ -38,6 +41,30 @@ const DESIGNATION_OPTIONS = [
   { value: "visitor", label: "Visitor" },
   { value: "other", label: "Other" },
 ];
+
+// Tiny helper for consistent field wrappers
+function FieldWrapper({
+  label,
+  required,
+  error,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  error?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <Label className="text-sm font-medium text-foreground">
+        {label}
+        {required && <span className="text-destructive ml-0.5">*</span>}
+      </Label>
+      {children}
+      {error && <p className="text-xs text-destructive">{error}</p>}
+    </div>
+  );
+}
 
 export default function OnboardingForm() {
   const router = useRouter();
@@ -87,156 +114,163 @@ export default function OnboardingForm() {
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className="space-y-6"
+      className="space-y-5"
     >
-      {/* Name Field */}
-      <div>
+      {/* Row 1: Name + Phone */}
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         <form.Field name="name">
           {(field) => (
-            <div className="space-y-2">
-              <Label htmlFor={field.name}>Full Name *</Label>
+            <FieldWrapper
+              label="Full Name"
+              required
+              error={field.state.meta.errors[0]?.message}
+            >
               <Input
                 id={field.name}
                 name={field.name}
-                placeholder="Enter your full name"
+                placeholder="Jane Smith"
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
+                className={cn(
+                  "bg-muted/30 border-muted-foreground/20 focus-visible:ring-1 focus-visible:ring-primary/40",
+                  field.state.meta.errors.length && "border-destructive/60",
+                )}
               />
-              {field.state.meta.errors.map((error) => (
-                <p key={error?.message} className="text-destructive text-sm">
-                  {error?.message}
-                </p>
-              ))}
-            </div>
+            </FieldWrapper>
           )}
         </form.Field>
-      </div>
 
-      {/* Phone Field */}
-      <div>
         <form.Field name="phone">
           {(field) => (
-            <div className="space-y-2">
-              <Label htmlFor={field.name}>Phone Number *</Label>
+            <FieldWrapper
+              label="Phone Number"
+              required
+              error={field.state.meta.errors[0]?.message}
+            >
               <Input
                 id={field.name}
                 name={field.name}
                 type="tel"
-                placeholder="+91 XXXXXXXXXX"
+                placeholder="+91 9XXXXXXXXX"
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
+                className={cn(
+                  "bg-muted/30 border-muted-foreground/20 focus-visible:ring-1 focus-visible:ring-primary/40",
+                  field.state.meta.errors.length && "border-destructive/60",
+                )}
               />
-              {field.state.meta.errors.map((error) => (
-                <p key={error?.message} className="text-destructive text-sm">
-                  {error?.message}
-                </p>
-              ))}
-            </div>
+            </FieldWrapper>
           )}
         </form.Field>
       </div>
 
-      {/* Purpose Field */}
-      <div>
-        <form.Field name="purpose">
-          {(field) => (
-            <div className="space-y-2">
-              <Label htmlFor={field.name}>Purpose of Visit *</Label>
-              <Select
-                value={field.state.value}
-                onValueChange={(value) => field.handleChange(value)}
-              >
-                <SelectTrigger id={field.name}>
-                  <SelectValue placeholder="Select purpose of visit" />
-                </SelectTrigger>
-                <SelectContent>
-                  {PURPOSE_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {field.state.meta.errors.map((error) => (
-                <p key={error?.message} className="text-destructive text-sm">
-                  {error?.message}
-                </p>
-              ))}
-            </div>
-          )}
-        </form.Field>
-      </div>
+      {/* Organization */}
+      <form.Field name="organization">
+        {(field) => (
+          <FieldWrapper
+            label="Organization / Institute"
+            required
+            error={field.state.meta.errors[0]?.message}
+          >
+            <Input
+              id={field.name}
+              name={field.name}
+              placeholder="Enter your organization"
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={(e) => field.handleChange(e.target.value)}
+              className={cn(
+                "bg-muted/30 border-muted-foreground/20 focus-visible:ring-1 focus-visible:ring-primary/40",
+                field.state.meta.errors.length && "border-destructive/60",
+              )}
+            />
+          </FieldWrapper>
+        )}
+      </form.Field>
 
-      {/* Organization Field */}
-      <div>
-        <form.Field name="organization">
-          {(field) => (
-            <div className="space-y-2">
-              <Label htmlFor={field.name}>Organization/Institute *</Label>
-              <Input
-                id={field.name}
-                name={field.name}
-                placeholder="Enter your organization or institute"
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-              {field.state.meta.errors.map((error) => (
-                <p key={error?.message} className="text-destructive text-sm">
-                  {error?.message}
-                </p>
-              ))}
-            </div>
-          )}
-        </form.Field>
-      </div>
-
-      {/* Designation Field */}
-      <div>
+      {/* Row 2: Designation + Purpose */}
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         <form.Field name="designation">
           {(field) => (
-            <div className="space-y-2">
-              <Label htmlFor={field.name}>Designation *</Label>
+            <FieldWrapper
+              label="Designation"
+              required
+              error={field.state.meta.errors[0]?.message}
+            >
               <Select
                 value={field.state.value}
-                onValueChange={(value) => field.handleChange(value)}
+                onValueChange={(v) => field.handleChange(v)}
               >
-                <SelectTrigger id={field.name}>
-                  <SelectValue placeholder="Select your designation" />
+                <SelectTrigger
+                  id={field.name}
+                  className="bg-muted/30 border-muted-foreground/20"
+                >
+                  <SelectValue placeholder="Select designation" />
                 </SelectTrigger>
                 <SelectContent>
-                  {DESIGNATION_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
+                  {DESIGNATION_OPTIONS.map((o) => (
+                    <SelectItem key={o.value} value={o.value}>
+                      {o.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              {field.state.meta.errors.map((error) => (
-                <p key={error?.message} className="text-destructive text-sm">
-                  {error?.message}
-                </p>
-              ))}
-            </div>
+            </FieldWrapper>
+          )}
+        </form.Field>
+
+        <form.Field name="purpose">
+          {(field) => (
+            <FieldWrapper
+              label="Purpose of Visit"
+              required
+              error={field.state.meta.errors[0]?.message}
+            >
+              <Select
+                value={field.state.value}
+                onValueChange={(v) => field.handleChange(v)}
+              >
+                <SelectTrigger
+                  id={field.name}
+                  className="bg-muted/30 border-muted-foreground/20"
+                >
+                  <SelectValue placeholder="Select purpose" />
+                </SelectTrigger>
+                <SelectContent>
+                  {PURPOSE_OPTIONS.map((o) => (
+                    <SelectItem key={o.value} value={o.value}>
+                      {o.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FieldWrapper>
           )}
         </form.Field>
       </div>
 
-      {/* Submit Button */}
+      <Separator className="opacity-40" />
+
+      {/* Submit */}
       <form.Subscribe>
         {(state) => (
           <Button
             type="submit"
-            className="w-full"
+            className="w-full h-10 text-sm font-medium"
             disabled={
               !state.canSubmit || state.isSubmitting || createVisitor.isPending
             }
           >
-            {state.isSubmitting || createVisitor.isPending
-              ? "Submitting..."
-              : "Complete Registration"}
+            {state.isSubmitting || createVisitor.isPending ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Submitting…
+              </>
+            ) : (
+              "Complete Registration"
+            )}
           </Button>
         )}
       </form.Subscribe>
