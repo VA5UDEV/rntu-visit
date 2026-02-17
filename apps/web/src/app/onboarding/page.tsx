@@ -48,7 +48,7 @@ export default async function OnboardingPage() {
         <Card className="w-full max-w-lg border-border/60 shadow-sm">
           <CardHeader className="pb-4">
             <div className="flex items-center gap-3 mb-1">
-              <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-primary/10 flex-shrink-0">
+              <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-primary/10 shrink-0">
                 <ClipboardList className="h-4 w-4 text-primary" />
               </div>
               <CardTitle className="text-xl font-semibold">
