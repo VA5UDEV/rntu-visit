@@ -93,8 +93,8 @@ export function Hero() {
                 className="flex flex-col items-center gap-5 text-center"
               >
                 <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
-                  Explore real-time geospatial data for buildings, facilities,
-                  and services across the RNTU campus.
+                  Explore real-time geospatial data for buildings,
+                  <br /> facilities, and services across the RNTU campus.
                 </p>
 
                 <Separator className="w-12 opacity-40" />
