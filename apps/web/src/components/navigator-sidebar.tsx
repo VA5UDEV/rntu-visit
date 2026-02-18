@@ -276,9 +276,8 @@ function SidebarContent({
           <div className="space-y-1.5">
             {/* Start */}
             <div className="flex items-center gap-2">
-              <div className="flex flex-col items-center gap-0.5 flex-shrink-0 w-5">
+              <div className="flex flex-col items-center flex-shrink-0 w-5">
                 <div className="h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-emerald-200 dark:ring-emerald-900" />
-                <div className="h-6 w-px bg-border" />
               </div>
               <Select value={startId} onValueChange={onStartChange}>
                 <SelectTrigger className="h-9 text-sm flex-1 bg-muted/30 border-muted-foreground/20">
