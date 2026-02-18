@@ -1,8 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 
-// Mirrors the MapNavigation layout: left sidebar + full-screen map area.
-// No dock on this page — matches the (locator) group layout.
 export default function LocatorLoading() {
   return (
     <div className="flex h-svh w-full overflow-hidden">
