@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Map,
   MapLayerGroup,
   MapLayers,
   MapLocateControl,
   MapMarker,
-  MapMarkerClusterGroup,
   MapPopup,
   MapTileLayer,
   MapZoomControl,
@@ -16,57 +15,25 @@ import {
 import type { LatLngExpression } from "leaflet";
 import { useMap, useMapEvents } from "react-leaflet";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import {
-  Navigation,
-  Search,
-  X,
-  MapPin,
-  Route,
-  Clock,
-  Ruler,
-  Menu,
-  ArrowDown,
-  Locate,
-  CheckCircle2,
-  Building2,
-  Footprints,
-  ChevronRight,
-} from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
+import {
+  NavigatorSidebar,
+  TYPE_CONFIG,
+  type Building,
+} from "./navigator-sidebar";
 
-// ─── Building Data ────────────────────────────────────────────────────────────
-const BUILDINGS = [
+// ─── Building Data ─────────────────────────────────────────────────────────────
+const BUILDINGS: Building[] = [
   {
     id: 21,
     name: "Gate 1",
     lat: 23.13532841376455,
     lng: 77.56212472915651,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "entrance",
     color: "#10b981",
   },
@@ -75,6 +42,8 @@ const BUILDINGS = [
     name: "Gate 2",
     lat: 23.135057098030337,
     lng: 77.56386816501619,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "entrance",
     color: "#10b981",
   },
@@ -83,6 +52,8 @@ const BUILDINGS = [
     name: "Gate 3",
     lat: 23.13519522247272,
     lng: 77.56522536277772,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "entrance",
     color: "#10b981",
   },
@@ -91,6 +62,8 @@ const BUILDINGS = [
     name: "Football Ground",
     lat: 23.134677255080238,
     lng: 77.56299376487733,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "sports",
     color: "#06b6d4",
   },
@@ -99,6 +72,8 @@ const BUILDINGS = [
     name: "Parking",
     lat: 23.134771284022804,
     lng: 77.56406772343689,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "parking",
     color: "#64748b",
   },
@@ -107,6 +82,8 @@ const BUILDINGS = [
     name: "Boys Hostel",
     lat: 23.13472658539429,
     lng: 77.56549358367921,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "hostel",
     color: "#ef4444",
   },
@@ -115,6 +92,8 @@ const BUILDINGS = [
     name: "Admission Cell",
     lat: 23.13442073715466,
     lng: 77.56287038326265,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "admin",
     color: "#3b82f6",
   },
@@ -123,6 +102,8 @@ const BUILDINGS = [
     name: "Admin",
     lat: 23.134341808463454,
     lng: 77.56435096263887,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "admin",
     color: "#3b82f6",
   },
@@ -131,6 +112,8 @@ const BUILDINGS = [
     name: "Engineering",
     lat: 23.134213549241174,
     lng: 77.56364822387695,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "academic",
     color: "#f59e0b",
   },
@@ -139,6 +122,8 @@ const BUILDINGS = [
     name: "AIC",
     lat: 23.133892900648796,
     lng: 77.56479620933534,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "facility",
     color: "#06b6d4",
   },
@@ -147,6 +132,8 @@ const BUILDINGS = [
     name: "Paramedical",
     lat: 23.13375970793121,
     lng: 77.5628435611725,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "facility",
     color: "#14b8a6",
   },
@@ -155,6 +142,8 @@ const BUILDINGS = [
     name: "Management",
     lat: 23.133517987476225,
     lng: 77.56428122520448,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "admin",
     color: "#3b82f6",
   },
@@ -163,6 +152,8 @@ const BUILDINGS = [
     name: "Workshops",
     lat: 23.13339959362504,
     lng: 77.56248950958253,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "facility",
     color: "#8b5cf6",
   },
@@ -171,6 +162,8 @@ const BUILDINGS = [
     name: "Audi & Law",
     lat: 23.1332318688236,
     lng: 77.56495714187623,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "facility",
     color: "#8b5cf6",
   },
@@ -179,6 +172,8 @@ const BUILDINGS = [
     name: "DSW",
     lat: 23.133049344536634,
     lng: 77.5637072324753,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "facility",
     color: "#06b6d4",
   },
@@ -187,6 +182,8 @@ const BUILDINGS = [
     name: "Canteen",
     lat: 23.133088809268383,
     lng: 77.56309032440187,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "facility",
     color: "#14b8a6",
   },
@@ -195,6 +192,8 @@ const BUILDINGS = [
     name: "Library",
     lat: 23.132452439052877,
     lng: 77.56477475166322,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "library",
     color: "#8b5cf6",
   },
@@ -203,6 +202,8 @@ const BUILDINGS = [
     name: "Basketball Court",
     lat: 23.132176184376007,
     lng: 77.56421148777008,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "sports",
     color: "#06b6d4",
   },
@@ -211,6 +212,8 @@ const BUILDINGS = [
     name: "Science",
     lat: 23.1319837923899,
     lng: 77.56494641304018,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "academic",
     color: "#f59e0b",
   },
@@ -219,6 +222,8 @@ const BUILDINGS = [
     name: "Agriculture",
     lat: 23.131717403030457,
     lng: 77.56455481052399,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "academic",
     color: "#f59e0b",
   },
@@ -227,6 +232,8 @@ const BUILDINGS = [
     name: "Pharmacy",
     lat: 23.13167793789516,
     lng: 77.56489276885988,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "academic",
     color: "#f59e0b",
   },
@@ -235,6 +242,8 @@ const BUILDINGS = [
     name: "Main Ground",
     lat: 23.13171246988917,
     lng: 77.56310105323793,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "sports",
     color: "#06b6d4",
   },
@@ -243,6 +252,8 @@ const BUILDINGS = [
     name: "TNSD",
     lat: 23.131194489045473,
     lng: 77.56257534027101,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "academic",
     color: "#f59e0b",
   },
@@ -251,6 +262,8 @@ const BUILDINGS = [
     name: "Girls Hostel",
     lat: 23.134105,
     lng: 77.56546,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "hostel",
     color: "#ec4899",
   },
@@ -259,6 +272,8 @@ const BUILDINGS = [
     name: "Food Processing Unit",
     lat: 23.131629,
     lng: 77.564082,
+    image:
+      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
     type: "facility",
     color: "#14b8a6",
   },
@@ -266,7 +281,7 @@ const BUILDINGS = [
 
 const CAMPUS_CENTER: LatLngExpression = [23.1333, 77.5639];
 
-// ─── Path Data ────────────────────────────────────────────────────────────────
+// ─── Path Data ─────────────────────────────────────────────────────────────────
 type Pt = { latitude: number; longitude: number };
 
 const GATE1_TO_GATE2: Pt[] = [
@@ -546,7 +561,6 @@ const GATE2_TO_FOOD_PROCESSING: Pt[] = [
   { latitude: 23.131707536747715, longitude: 77.56399588724486 },
   { latitude: 23.131653272179715, longitude: 77.56403341837374 },
 ];
-
 const PARKING_EXIT_FULL: Pt[] = [
   { latitude: 23.134588460469217, longitude: 77.56404397751854 },
   { latitude: 23.13453913010436, longitude: 77.56400644638966 },
@@ -674,21 +688,22 @@ function getCustomPath(startId: number, endId: number): Pt[] | null {
       if (
         Math.abs(g2s[i]!.latitude - g2e[i]!.latitude) < 0.0002 &&
         Math.abs(g2s[i]!.longitude - g2e[i]!.longitude) < 0.0002
-      ) {
+      )
         matchIndex = i;
-      } else break;
+      else break;
     }
-    const part1 = g2s.slice(matchIndex > -1 ? matchIndex : 0).reverse();
-    const part2 = g2e.slice(matchIndex > -1 ? matchIndex + 1 : 0);
-    return [...part1, ...part2];
+    return [
+      ...g2s.slice(matchIndex > -1 ? matchIndex : 0).reverse(),
+      ...g2e.slice(matchIndex > -1 ? matchIndex + 1 : 0),
+    ];
   }
   return null;
 }
 
 function haversineMeters(p1: Pt, p2: Pt): number {
   const R = 6371e3;
-  const φ1 = (p1.latitude * Math.PI) / 180;
-  const φ2 = (p2.latitude * Math.PI) / 180;
+  const φ1 = (p1.latitude * Math.PI) / 180,
+    φ2 = (p2.latitude * Math.PI) / 180;
   const Δφ = ((p2.latitude - p1.latitude) * Math.PI) / 180;
   const Δλ = ((p2.longitude - p1.longitude) * Math.PI) / 180;
   const a =
@@ -743,8 +758,8 @@ function buildGraph() {
   });
   CONNECTIONS.forEach(([a, b]) => {
     if (a === undefined || b === undefined) return;
-    const ba = BUILDINGS.find((x) => x.id === a)!;
-    const bb = BUILDINGS.find((x) => x.id === b)!;
+    const ba = BUILDINGS.find((x) => x.id === a)!,
+      bb = BUILDINGS.find((x) => x.id === b)!;
     const cost = Math.sqrt((bb.lat - ba.lat) ** 2 + (bb.lng - ba.lng) ** 2);
     graph[a]!.push({ node: b, cost });
     graph[b]!.push({ node: a, cost });
@@ -759,8 +774,8 @@ function findPath(startId: number, endId: number): number[] | null {
   const cameFrom: Record<number, number> = {};
   const gScore: Record<number, number> = { [startId]: 0 };
   const h = (a: number, b: number) => {
-    const ba = BUILDINGS.find((x) => x.id === a)!;
-    const bb = BUILDINGS.find((x) => x.id === b)!;
+    const ba = BUILDINGS.find((x) => x.id === a)!,
+      bb = BUILDINGS.find((x) => x.id === b)!;
     return Math.sqrt((bb.lat - ba.lat) ** 2 + (bb.lng - ba.lng) ** 2);
   };
   while (open.length > 0) {
@@ -789,16 +804,13 @@ function findPath(startId: number, endId: number): number[] | null {
   return null;
 }
 
+// ─── Map helpers ───────────────────────────────────────────────────────────────
 function MapInteractionBlocker({ onDrag }: { onDrag: () => void }) {
   useMapEvents({ dragstart: onDrag, zoomstart: onDrag });
   return null;
 }
 
-function FlyToBuilding({
-  building,
-}: {
-  building: (typeof BUILDINGS)[0] | null;
-}) {
+function FlyToBuilding({ building }: { building: Building | null }) {
   const map = useMap();
   useEffect(() => {
     if (building)
@@ -807,67 +819,56 @@ function FlyToBuilding({
   return null;
 }
 
-// ─── Type config ──────────────────────────────────────────────────────────────
-const TYPE_CONFIG: Record<string, { badge: string; label: string }> = {
-  entrance: {
-    badge:
-      "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800",
-    label: "Entrance",
-  },
-  academic: {
-    badge:
-      "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border-amber-200 dark:border-amber-800",
-    label: "Academic",
-  },
-  admin: {
-    badge:
-      "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 border-blue-200 dark:border-blue-800",
-    label: "Admin",
-  },
-  hostel: {
-    badge:
-      "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400 border-rose-200 dark:border-rose-800",
-    label: "Hostel",
-  },
-  sports: {
-    badge:
-      "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-400 border-cyan-200 dark:border-cyan-800",
-    label: "Sports",
-  },
-  facility: {
-    badge:
-      "bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400 border-violet-200 dark:border-violet-800",
-    label: "Facility",
-  },
-  library: {
-    badge:
-      "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-400 border-purple-200 dark:border-purple-800",
-    label: "Library",
-  },
-  parking: {
-    badge:
-      "bg-slate-100 text-slate-600 dark:bg-slate-800/60 dark:text-slate-400 border-slate-200 dark:border-slate-700",
-    label: "Parking",
-  },
-};
-
-// ─── Section heading ──────────────────────────────────────────────────────────
-function SectionLabel({
-  icon: Icon,
-  children,
+// ─── Building Popup ────────────────────────────────────────────────────────────
+function BuildingPopup({
+  b,
+  onSetStart,
+  onSetEnd,
 }: {
-  icon: React.ElementType;
-  children: React.ReactNode;
+  b: Building;
+  onSetStart: () => void;
+  onSetEnd: () => void;
 }) {
+  const cfg = TYPE_CONFIG[b.type];
   return (
-    <div className="flex items-center gap-2 mb-3">
-      <div className="flex items-center justify-center w-5 h-5 rounded bg-muted">
-        <Icon className="h-3 w-3 text-muted-foreground" />
+    <>
+      <div className="relative h-32 overflow-hidden rounded-t-md">
+        <Image fill src={b.image} alt={b.name} className="object-cover" />
       </div>
-      <span className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-        {children}
-      </span>
-    </div>
+      <div className="p-2.5 min-w-[160px]">
+        <Badge
+          variant="outline"
+          className={cn("text-[10px] capitalize mb-1.5")}
+        >
+          {TYPE_CONFIG[b.type]?.label ?? b.type}
+        </Badge>
+        <div className="flex items-center justify-center gap-2 mb-1.5">
+          <span
+            className="h-2.5 w-2.5 rounded-full flex-shrink-0"
+            style={{ backgroundColor: b.color }}
+          />
+          <p className="font-semibold text-sm leading-tight">{b.name}</p>
+        </div>
+        <div className="flex gap-1.5">
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-7 text-[11px] px-2 flex-1 border-emerald-200 text-emerald-400 hover:bg-emerald-50"
+            onClick={onSetStart}
+          >
+            Set Start
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-7 text-[11px] px-2 flex-1 border-rose-200 text-rose-400 hover:bg-rose-50"
+            onClick={onSetEnd}
+          >
+            Set End
+          </Button>
+        </div>
+      </div>
+    </>
   );
 }
 
@@ -880,20 +881,13 @@ export function MapNavigation() {
     distance: number;
     time: number;
   } | null>(null);
-  const [search, setSearch] = useState("");
-  const [sheetOpen, setSheetOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [navActive, setNavActive] = useState(false);
-  const [flyTarget, setFlyTarget] = useState<(typeof BUILDINGS)[0] | null>(
-    null,
-  );
-
-  const filtered = BUILDINGS.filter((b) =>
-    b.name.toLowerCase().includes(search.toLowerCase()),
-  );
+  const [flyTarget, setFlyTarget] = useState<Building | null>(null);
 
   useEffect(() => {
-    const s = parseInt(startId);
-    const e = parseInt(endId);
+    const s = parseInt(startId),
+      e = parseInt(endId);
     if (!s || !e || s === e) {
       setRoutePath(null);
       setRouteInfo(null);
@@ -925,8 +919,8 @@ export function MapNavigation() {
         cp.forEach((p) => coords.push([p.latitude, p.longitude]));
         totalDist += pathDistance(cp);
       } else {
-        const ba = BUILDINGS.find((x) => x.id === a)!;
-        const bb = BUILDINGS.find((x) => x.id === b)!;
+        const ba = BUILDINGS.find((x) => x.id === a)!,
+          bb = BUILDINGS.find((x) => x.id === b)!;
         coords.push([ba.lat, ba.lng]);
         totalDist += haversineMeters(
           { latitude: ba.lat, longitude: ba.lng },
@@ -954,348 +948,27 @@ export function MapNavigation() {
   const startBuilding = BUILDINGS.find((b) => b.id === parseInt(startId));
   const endBuilding = BUILDINGS.find((b) => b.id === parseInt(endId));
 
-  // ─── Navigation Panel ──────────────────────────────────────────────────────
-  const NavPanel = (
-    <TooltipProvider delayDuration={300}>
-      <div className="flex flex-col gap-5 p-4">
-        {/* ── Search ── */}
-        <div>
-          <SectionLabel icon={Search}>Search</SectionLabel>
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
-            <Input
-              className="pl-9 pr-9 h-9 text-sm bg-muted/40 border-muted-foreground/20 focus-visible:ring-1 focus-visible:ring-primary/40 placeholder:text-muted-foreground/60"
-              placeholder="Search buildings…"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            {search && (
-              <button
-                onClick={() => setSearch("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            )}
-          </div>
-
-          {search && (
-            <div className="mt-2 rounded-lg border bg-background shadow-sm overflow-hidden">
-              <ScrollArea className="max-h-44">
-                {filtered.length === 0 ? (
-                  <div className="py-6 text-center">
-                    <Building2 className="h-6 w-6 mx-auto mb-1.5 text-muted-foreground/40" />
-                    <p className="text-xs text-muted-foreground">
-                      No results found
-                    </p>
-                  </div>
-                ) : (
-                  filtered.map((b, i) => (
-                    <button
-                      key={b.id}
-                      className={cn(
-                        "w-full text-left px-3 py-2.5 flex items-center gap-2.5 text-sm hover:bg-accent transition-colors",
-                        i !== filtered.length - 1 &&
-                          "border-b border-border/50",
-                      )}
-                      onClick={() => {
-                        setFlyTarget(b);
-                        setSearch("");
-                      }}
-                    >
-                      <span
-                        className="h-2 w-2 rounded-full flex-shrink-0 ring-2 ring-white dark:ring-background"
-                        style={{ backgroundColor: b.color }}
-                      />
-                      <span className="font-medium flex-1 truncate">
-                        {b.name}
-                      </span>
-                      <ChevronRight className="h-3 w-3 text-muted-foreground/50 flex-shrink-0" />
-                    </button>
-                  ))
-                )}
-              </ScrollArea>
-            </div>
-          )}
-        </div>
-
-        <Separator className="opacity-50" />
-
-        {/* ── Route Planner ── */}
-        <div>
-          <SectionLabel icon={Route}>Route Planner</SectionLabel>
-
-          <div className="space-y-1.5">
-            {/* Start */}
-            <div className="flex items-center gap-2">
-              <div className="flex flex-col items-center gap-0.5 flex-shrink-0 w-5">
-                <div className="h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-emerald-200 dark:ring-emerald-900" />
-                <div className="h-6 w-px bg-border" />
-              </div>
-              <Select value={startId} onValueChange={setStartId}>
-                <SelectTrigger className="h-9 text-sm flex-1 bg-muted/30 border-muted-foreground/20">
-                  <SelectValue placeholder="Choose start…" />
-                </SelectTrigger>
-                <SelectContent
-                  className="z-[2000]"
-                  position="popper"
-                  sideOffset={4}
-                >
-                  {BUILDINGS.map((b) => (
-                    <SelectItem key={b.id} value={String(b.id)}>
-                      <div className="flex items-center gap-2">
-                        <span
-                          className="h-1.5 w-1.5 rounded-full"
-                          style={{ backgroundColor: b.color }}
-                        />
-                        {b.name}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Destination */}
-            <div className="flex items-center gap-2">
-              <div className="flex flex-col items-center flex-shrink-0 w-5">
-                <div className="h-2 w-2 rounded-full bg-rose-500 ring-2 ring-rose-200 dark:ring-rose-900" />
-              </div>
-              <Select value={endId} onValueChange={setEndId}>
-                <SelectTrigger className="h-9 text-sm flex-1 bg-muted/30 border-muted-foreground/20">
-                  <SelectValue placeholder="Choose destination…" />
-                </SelectTrigger>
-                <SelectContent
-                  className="z-[2000]"
-                  position="popper"
-                  sideOffset={4}
-                >
-                  {BUILDINGS.map((b) => (
-                    <SelectItem
-                      key={b.id}
-                      value={String(b.id)}
-                      disabled={b.id === parseInt(startId)}
-                    >
-                      <div className="flex items-center gap-2">
-                        <span
-                          className="h-1.5 w-1.5 rounded-full"
-                          style={{ backgroundColor: b.color }}
-                        />
-                        {b.name}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
-
-        {/* ── Route Info Card ── */}
-        {routeInfo && startBuilding && endBuilding && (
-          <div className="rounded-xl border border-emerald-200/70 dark:border-emerald-800/50 bg-gradient-to-b from-emerald-50/80 to-emerald-50/20 dark:from-emerald-950/30 dark:to-transparent overflow-hidden">
-            {/* Header */}
-            <div className="px-3.5 pt-3 pb-2 flex items-center gap-2 border-b border-emerald-100 dark:border-emerald-900/50">
-              <div className="flex items-center justify-center h-5 w-5 rounded-full bg-emerald-500">
-                <CheckCircle2 className="h-3 w-3 text-white" />
-              </div>
-              <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">
-                Route Found
-              </span>
-            </div>
-
-            {/* Journey summary */}
-            <div className="px-3.5 py-3 space-y-0.5">
-              <div className="flex items-start gap-2">
-                <div className="mt-0.5 h-2 w-2 rounded-full bg-emerald-500 flex-shrink-0" />
-                <p className="text-xs font-medium leading-snug truncate">
-                  {startBuilding.name}
-                </p>
-              </div>
-              <div className="ml-[3px] h-4 w-px border-l-2 border-dashed border-muted-foreground/30 ml-[4px]" />
-              <div className="flex items-start gap-2">
-                <div className="mt-0.5 h-2 w-2 rounded-full bg-rose-500 flex-shrink-0" />
-                <p className="text-xs font-medium leading-snug truncate">
-                  {endBuilding.name}
-                </p>
-              </div>
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-2 gap-2 px-3.5 pb-3">
-              <div className="rounded-lg bg-white/70 dark:bg-background/50 border border-border/60 px-3 py-2 text-center">
-                <div className="flex items-center justify-center gap-1 mb-0.5">
-                  <Ruler className="h-3 w-3 text-muted-foreground" />
-                  <span className="text-base font-bold tabular-nums">
-                    {routeInfo.distance}
-                  </span>
-                </div>
-                <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">
-                  Meters
-                </p>
-              </div>
-              <div className="rounded-lg bg-white/70 dark:bg-background/50 border border-border/60 px-3 py-2 text-center">
-                <div className="flex items-center justify-center gap-1 mb-0.5">
-                  <Footprints className="h-3 w-3 text-muted-foreground" />
-                  <span className="text-base font-bold tabular-nums">
-                    {routeInfo.time}
-                  </span>
-                </div>
-                <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">
-                  Min walk
-                </p>
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex gap-2 px-3.5 pb-3.5">
-              {!navActive ? (
-                <Button
-                  size="sm"
-                  className="flex-1 h-8 text-xs bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
-                  onClick={() => {
-                    setNavActive(true);
-                    setSheetOpen(false);
-                  }}
-                >
-                  <Navigation className="h-3.5 w-3.5 mr-1.5" />
-                  Start Navigation
-                </Button>
-              ) : (
-                <div className="flex-1 rounded-md bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 text-xs font-semibold h-8 flex items-center justify-center gap-1.5">
-                  <Navigation className="h-3.5 w-3.5" />
-                  Navigation Active
-                </div>
-              )}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-8 w-8 p-0 flex-shrink-0"
-                    onClick={clearRoute}
-                  >
-                    <X className="h-3.5 w-3.5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="top" className="text-xs">
-                  Clear route
-                </TooltipContent>
-              </Tooltip>
-            </div>
-          </div>
-        )}
-
-        {startId && endId && !routeInfo && (
-          <div className="rounded-lg border border-dashed border-muted-foreground/30 py-4 text-center">
-            <MapPin className="h-5 w-5 mx-auto mb-1.5 text-muted-foreground/40" />
-            <p className="text-xs text-muted-foreground">
-              No route found between these locations
-            </p>
-          </div>
-        )}
-
-        <Separator className="opacity-50" />
-
-        {/* ── All Locations ── */}
-        <div>
-          <SectionLabel icon={Building2}>All Locations</SectionLabel>
-          <ScrollArea className="h-64">
-            <div className="space-y-0.5 pr-2">
-              {BUILDINGS.map((b) => {
-                const cfg = TYPE_CONFIG[b.type];
-                return (
-                  <button
-                    key={b.id}
-                    className="w-full text-left rounded-lg px-2.5 py-2 text-sm hover:bg-accent transition-colors flex items-center gap-2.5 group"
-                    onClick={() => {
-                      setFlyTarget(b);
-                      setSheetOpen(false);
-                    }}
-                  >
-                    <span
-                      className="h-2.5 w-2.5 rounded-full flex-shrink-0 transition-transform group-hover:scale-125"
-                      style={{ backgroundColor: b.color }}
-                    />
-                    <span className="flex-1 truncate font-medium text-[13px]">
-                      {b.name}
-                    </span>
-                    <Badge
-                      variant="outline"
-                      className={cn(
-                        "ml-auto text-[9px] px-1.5 py-0 h-4 font-medium capitalize flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity",
-                        cfg?.badge,
-                      )}
-                    >
-                      {cfg?.label ?? b.type}
-                    </Badge>
-                  </button>
-                );
-              })}
-            </div>
-          </ScrollArea>
-        </div>
-      </div>
-    </TooltipProvider>
-  );
-
   return (
     <div className="relative w-full h-full">
-      {/* Mobile sheet trigger */}
-      <div className="absolute top-13 right-3 z-[1001] md:hidden">
-        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-          <SheetTrigger asChild>
-            <Button
-              size="icon"
-              variant="secondary"
-              className="shadow-md border h-9 w-9"
-            >
-              <Menu className="h-4 w-4" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-80 p-0 flex flex-col">
-            <SheetHeader className="px-4 py-3 border-b flex-shrink-0">
-              <SheetTitle className="flex items-center gap-2 text-sm font-semibold">
-                <div className="flex items-center justify-center h-6 w-6 rounded-md bg-primary/10">
-                  <Navigation className="h-3.5 w-3.5 text-primary" />
-                </div>
-                Campus Navigator
-              </SheetTitle>
-            </SheetHeader>
-            <div className="flex-1 min-h-0 overflow-y-auto">{NavPanel}</div>
-          </SheetContent>
-        </Sheet>
-      </div>
+      {/* ── Sidebar / Drawer ─────────────────────────────────────────────────── */}
+      <NavigatorSidebar
+        buildings={BUILDINGS}
+        startId={startId}
+        endId={endId}
+        onStartChange={setStartId}
+        onEndChange={setEndId}
+        routeInfo={routeInfo}
+        startBuilding={startBuilding}
+        endBuilding={endBuilding}
+        navActive={navActive}
+        onNavStart={() => setNavActive(true)}
+        onClearRoute={clearRoute}
+        onFlyTo={setFlyTarget}
+        drawerOpen={drawerOpen}
+        onDrawerOpenChange={setDrawerOpen}
+      />
 
-      {/* Desktop sidebar */}
-      <div className="absolute top-0 left-0 h-full w-80 z-[1000] hidden md:flex flex-col bg-background/97 backdrop-blur-sm border-r shadow-sm">
-        {/* Sidebar header */}
-        <div className="px-4 py-3.5 border-b flex-shrink-0">
-          <div className="flex items-center gap-2.5">
-            <div className="flex items-center justify-center h-7 w-7 rounded-lg bg-primary/10 flex-shrink-0">
-              <Navigation className="h-3.5 w-3.5 text-primary" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h2 className="font-semibold text-sm leading-none">
-                Campus Navigator
-              </h2>
-              <p className="text-[10px] text-muted-foreground mt-0.5">
-                {BUILDINGS.length} locations mapped
-              </p>
-            </div>
-            {navActive && (
-              <Badge className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 text-[10px] font-semibold px-1.5">
-                <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse" />
-                Live
-              </Badge>
-            )}
-          </div>
-        </div>
-
-        <div className="flex-1 min-h-0 overflow-y-auto">{NavPanel}</div>
-      </div>
-
-      {/* Map */}
+      {/* ── Map ──────────────────────────────────────────────────────────────── */}
       <div className="w-full h-full md:pl-80">
         <Map center={CAMPUS_CENTER} zoom={17} className="!rounded-none">
           <MapInteractionBlocker onDrag={() => {}} />
@@ -1318,63 +991,22 @@ export function MapNavigation() {
                   position={[b.lat, b.lng] as LatLngExpression}
                   icon={
                     <div
-                      className="rounded-full border-2 border-white shadow-md flex items-center justify-center"
+                      className="rounded-full border-2 border-white shadow-md"
                       style={{
-                        width: 22,
-                        height: 22,
+                        width: 14,
+                        height: 14,
                         backgroundColor: b.color,
                       }}
                     />
                   }
-                  iconAnchor={[11, 11]}
-                  eventHandlers={{
-                    click: () => {
-                      setFlyTarget(b);
-                      if (!startId) setStartId(String(b.id));
-                      else if (!endId && String(b.id) !== startId)
-                        setEndId(String(b.id));
-                    },
-                  }}
+                  iconAnchor={[7, 7]}
                 >
                   <MapPopup>
-                    <div className="p-2.5 min-w-[160px]">
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <span
-                          className="h-2.5 w-2.5 rounded-full flex-shrink-0"
-                          style={{ backgroundColor: b.color }}
-                        />
-                        <p className="font-semibold text-sm leading-tight">
-                          {b.name}
-                        </p>
-                      </div>
-                      <Badge
-                        variant="outline"
-                        className={cn(
-                          "text-[10px] capitalize mb-2.5",
-                          TYPE_CONFIG[b.type]?.badge,
-                        )}
-                      >
-                        {TYPE_CONFIG[b.type]?.label ?? b.type}
-                      </Badge>
-                      <div className="flex gap-1.5">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="h-7 text-[11px] px-2 flex-1 border-emerald-200 text-emerald-700 hover:bg-emerald-50"
-                          onClick={() => setStartId(String(b.id))}
-                        >
-                          Set Start
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="h-7 text-[11px] px-2 flex-1 border-rose-200 text-rose-600 hover:bg-rose-50"
-                          onClick={() => setEndId(String(b.id))}
-                        >
-                          Set End
-                        </Button>
-                      </div>
-                    </div>
+                    <BuildingPopup
+                      b={b}
+                      onSetStart={() => setStartId(String(b.id))}
+                      onSetEnd={() => setEndId(String(b.id))}
+                    />
                   </MapPopup>
                 </MapMarker>
               ))}
@@ -1391,7 +1023,6 @@ export function MapNavigation() {
                 opacity: 0.9,
                 fill: false,
                 dashArray: navActive ? undefined : "12 8",
-                dashOffset: "0",
                 lineCap: "round",
                 lineJoin: "round",
               }}
@@ -1402,11 +1033,9 @@ export function MapNavigation() {
             <MapMarker
               position={[startBuilding.lat, startBuilding.lng]}
               icon={
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500 border-2 border-white shadow-lg">
-                  <Locate className="h-4 w-4 text-white" />
-                </div>
+                <div className="w-5 h-5 rounded-full bg-emerald-500 border-2 border-white shadow-lg" />
               }
-              iconAnchor={[16, 16]}
+              iconAnchor={[10, 10]}
             />
           )}
 
@@ -1414,11 +1043,9 @@ export function MapNavigation() {
             <MapMarker
               position={[endBuilding.lat, endBuilding.lng]}
               icon={
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-rose-500 border-2 border-white shadow-lg">
-                  <MapPin className="h-4 w-4 text-white" />
-                </div>
+                <div className="w-5 h-5 rounded-full bg-rose-500 border-2 border-white shadow-lg" />
               }
-              iconAnchor={[16, 16]}
+              iconAnchor={[10, 10]}
             />
           )}
 
