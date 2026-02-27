@@ -86,26 +86,8 @@ export default function UserMenu() {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem
-          className="gap-2 text-xs text-muted-foreground cursor-default"
-          disabled
-        >
-          <User className="h-3.5 w-3.5" />
-          {session.user.name}
-        </DropdownMenuItem>
-
-        <DropdownMenuItem
-          className="gap-2 text-xs text-muted-foreground cursor-default"
-          disabled
-        >
-          <Mail className="h-3.5 w-3.5" />
-          <span className="truncate">{session.user.email}</span>
-        </DropdownMenuItem>
-
-        <DropdownMenuSeparator />
-
         {/* Theme toggle row */}
-        <div className="flex items-center justify-between px-2 py-1.5">
+        <div className="flex items-center justify-between px-2 py-0">
           <span className="text-xs text-muted-foreground">Theme</span>
           <ModeToggle />
         </div>
