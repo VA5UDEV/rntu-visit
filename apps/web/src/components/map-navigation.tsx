@@ -20,10 +20,17 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import {
+  SidebarProvider,
+  SidebarInset,
+  SidebarTrigger,
+  useSidebar,
+} from "@/components/ui/sidebar";
+import {
   NavigatorSidebar,
   TYPE_CONFIG,
   type Building,
 } from "./navigator-sidebar";
+import { Separator } from "./ui/separator";
 
 // ─── Building Data ─────────────────────────────────────────────────────────────
 const BUILDINGS: Building[] = [
@@ -32,8 +39,7 @@ const BUILDINGS: Building[] = [
     name: "Gate 1",
     lat: 23.13532841376455,
     lng: 77.56212472915651,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "entrance",
     color: "#10b981",
   },
@@ -42,8 +48,7 @@ const BUILDINGS: Building[] = [
     name: "Gate 2",
     lat: 23.135057098030337,
     lng: 77.56386816501619,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "entrance",
     color: "#10b981",
   },
@@ -52,8 +57,7 @@ const BUILDINGS: Building[] = [
     name: "Gate 3",
     lat: 23.13519522247272,
     lng: 77.56522536277772,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "entrance",
     color: "#10b981",
   },
@@ -62,8 +66,7 @@ const BUILDINGS: Building[] = [
     name: "Football Ground",
     lat: 23.134677255080238,
     lng: 77.56299376487733,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "sports",
     color: "#06b6d4",
   },
@@ -72,8 +75,7 @@ const BUILDINGS: Building[] = [
     name: "Parking",
     lat: 23.134771284022804,
     lng: 77.56406772343689,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "parking",
     color: "#64748b",
   },
@@ -82,8 +84,7 @@ const BUILDINGS: Building[] = [
     name: "Boys Hostel",
     lat: 23.13472658539429,
     lng: 77.56549358367921,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "hostel",
     color: "#ef4444",
   },
@@ -92,8 +93,7 @@ const BUILDINGS: Building[] = [
     name: "Admission Cell",
     lat: 23.13442073715466,
     lng: 77.56287038326265,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "admin",
     color: "#3b82f6",
   },
@@ -102,8 +102,7 @@ const BUILDINGS: Building[] = [
     name: "Admin",
     lat: 23.134341808463454,
     lng: 77.56435096263887,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "admin",
     color: "#3b82f6",
   },
@@ -112,8 +111,7 @@ const BUILDINGS: Building[] = [
     name: "Engineering",
     lat: 23.134213549241174,
     lng: 77.56364822387695,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "academic",
     color: "#f59e0b",
   },
@@ -122,8 +120,7 @@ const BUILDINGS: Building[] = [
     name: "AIC",
     lat: 23.133892900648796,
     lng: 77.56479620933534,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "facility",
     color: "#06b6d4",
   },
@@ -132,8 +129,7 @@ const BUILDINGS: Building[] = [
     name: "Paramedical",
     lat: 23.13375970793121,
     lng: 77.5628435611725,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "facility",
     color: "#14b8a6",
   },
@@ -142,8 +138,7 @@ const BUILDINGS: Building[] = [
     name: "Management",
     lat: 23.133517987476225,
     lng: 77.56428122520448,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "admin",
     color: "#3b82f6",
   },
@@ -152,8 +147,7 @@ const BUILDINGS: Building[] = [
     name: "Workshops",
     lat: 23.13339959362504,
     lng: 77.56248950958253,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "facility",
     color: "#8b5cf6",
   },
@@ -162,8 +156,7 @@ const BUILDINGS: Building[] = [
     name: "Audi & Law",
     lat: 23.1332318688236,
     lng: 77.56495714187623,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "facility",
     color: "#8b5cf6",
   },
@@ -172,8 +165,7 @@ const BUILDINGS: Building[] = [
     name: "DSW",
     lat: 23.133049344536634,
     lng: 77.5637072324753,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "facility",
     color: "#06b6d4",
   },
@@ -182,8 +174,7 @@ const BUILDINGS: Building[] = [
     name: "Canteen",
     lat: 23.133088809268383,
     lng: 77.56309032440187,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "facility",
     color: "#14b8a6",
   },
@@ -192,8 +183,7 @@ const BUILDINGS: Building[] = [
     name: "Library",
     lat: 23.132452439052877,
     lng: 77.56477475166322,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "library",
     color: "#8b5cf6",
   },
@@ -202,8 +192,7 @@ const BUILDINGS: Building[] = [
     name: "Basketball Court",
     lat: 23.132176184376007,
     lng: 77.56421148777008,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "sports",
     color: "#06b6d4",
   },
@@ -212,8 +201,7 @@ const BUILDINGS: Building[] = [
     name: "Science",
     lat: 23.1319837923899,
     lng: 77.56494641304018,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "academic",
     color: "#f59e0b",
   },
@@ -222,8 +210,7 @@ const BUILDINGS: Building[] = [
     name: "Agriculture",
     lat: 23.131717403030457,
     lng: 77.56455481052399,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "academic",
     color: "#f59e0b",
   },
@@ -232,8 +219,7 @@ const BUILDINGS: Building[] = [
     name: "Pharmacy",
     lat: 23.13167793789516,
     lng: 77.56489276885988,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "academic",
     color: "#f59e0b",
   },
@@ -242,8 +228,7 @@ const BUILDINGS: Building[] = [
     name: "Main Ground",
     lat: 23.13171246988917,
     lng: 77.56310105323793,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "sports",
     color: "#06b6d4",
   },
@@ -252,8 +237,7 @@ const BUILDINGS: Building[] = [
     name: "TNSD",
     lat: 23.131194489045473,
     lng: 77.56257534027101,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "academic",
     color: "#f59e0b",
   },
@@ -262,8 +246,7 @@ const BUILDINGS: Building[] = [
     name: "Girls Hostel",
     lat: 23.134105,
     lng: 77.56546,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "hostel",
     color: "#ec4899",
   },
@@ -272,8 +255,7 @@ const BUILDINGS: Building[] = [
     name: "Food Processing Unit",
     lat: 23.131629,
     lng: 77.564082,
-    image:
-      "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop",
+    image: "/preview.jpg",
     type: "facility",
     color: "#14b8a6",
   },
@@ -829,47 +811,86 @@ function BuildingPopup({
   onSetStart: () => void;
   onSetEnd: () => void;
 }) {
-  const cfg = TYPE_CONFIG[b.type];
   return (
     <>
-      <div className="relative h-32 overflow-hidden rounded-t-md">
-        <Image fill src={b.image} alt={b.name} className="object-cover" />
-      </div>
-      <div className="p-2.5 min-w-[160px]">
-        <Badge
-          variant="outline"
-          className={cn("text-[10px] capitalize mb-1.5")}
-        >
-          {TYPE_CONFIG[b.type]?.label ?? b.type}
-        </Badge>
-        <div className="flex items-center justify-center gap-2 mb-1.5">
-          <span
-            className="h-2.5 w-2.5 rounded-full flex-shrink-0"
-            style={{ backgroundColor: b.color }}
+      <div className="dark">
+        <div className="relative h-32 overflow-hidden rounded-t-md">
+          <Image
+            fill
+            src={b.image}
+            alt={b.name}
+            className="h-64 w-full object-cover mask-[linear-gradient(to_bottom,black_50%,transparent_100%)]"
           />
-          <p className="font-semibold text-sm leading-tight">{b.name}</p>
         </div>
-        <div className="flex gap-1.5">
-          <Button
-            size="sm"
-            variant="outline"
-            className="h-7 text-[11px] px-2 flex-1 border-emerald-200 text-emerald-400 hover:bg-emerald-50"
-            onClick={onSetStart}
-          >
-            Set Start
-          </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            className="h-7 text-[11px] px-2 flex-1 border-rose-200 text-rose-400 hover:bg-rose-50"
-            onClick={onSetEnd}
-          >
-            Set End
-          </Button>
+        <div className="p-2.5 min-w-[160px]">
+          <div className="inline-flex items-center bg-white/20 backdrop-blur-md rounded-full border border-white/30 mb-1.5">
+            <Badge
+              variant="outline"
+              className="text-[10px] capitalize border-none"
+            >
+              {TYPE_CONFIG[b.type]?.label ?? b.type}
+            </Badge>
+          </div>
+          <div className="flex items-center justify-center gap-2 mb-1.5">
+            <span
+              className="h-2.5 w-2.5 rounded-full shrink-0"
+              style={{ backgroundColor: b.color }}
+            />
+            <p className="font-semibold text-sm leading-tight">{b.name}</p>
+          </div>
+          <Separator className="my-1.5 dark:bg-transparent backdrop-blur" />
+          <div className="flex gap-1.5">
+            <div className="flex-1 items-center gap-2 bg-white/20 backdrop-blur-md rounded-md border border-white/30 cursor-pointer transition-all duration-300 hover:bg-white/40 hover:border-white/50 hover:shadow-sm">
+              <Button
+                size="sm"
+                variant="link"
+                className="h-7 text-white text-[11px] px-2"
+                onClick={onSetStart}
+              >
+                Set Start
+              </Button>
+            </div>
+            <div className="flex-1 items-center gap-2 bg-white/20 backdrop-blur-md rounded-md border border-white/30 cursor-pointer transition-all duration-300 hover:bg-white/40 hover:border-white/50 hover:shadow-sm">
+              <Button
+                size="sm"
+                variant="link"
+                className="h-7 text-white text-[11px] px-2"
+                onClick={onSetEnd}
+              >
+                Set End
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </>
   );
+}
+
+// ─── Floating sidebar trigger (shown only when sidebar is closed) ──────────────
+function FloatingTrigger() {
+  const { open, openMobile, isMobile } = useSidebar();
+  const isVisible = isMobile ? !openMobile : !open;
+  if (!isVisible) return null;
+  return (
+    <div className="absolute top-3 left-3 z-[1001]">
+      <SidebarTrigger className="h-9 w-9 shadow-md border bg-background/95 hover:bg-background backdrop-blur-sm" />
+    </div>
+  );
+}
+
+// ─── Invalidate Leaflet tile cache after sidebar transition ────────────────────
+function MapResizer() {
+  const map = useMap();
+  const { open, openMobile, isMobile } = useSidebar();
+
+  useEffect(() => {
+    // Wait for the CSS sidebar transition (~200ms) to finish before resizing
+    const t = setTimeout(() => map.invalidateSize(), 220);
+    return () => clearTimeout(t);
+  }, [open, openMobile, isMobile, map]);
+
+  return null;
 }
 
 // ─── Main Component ────────────────────────────────────────────────────────────
@@ -881,7 +902,6 @@ export function MapNavigation() {
     distance: number;
     time: number;
   } | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const [navActive, setNavActive] = useState(false);
   const [flyTarget, setFlyTarget] = useState<Building | null>(null);
 
@@ -949,8 +969,12 @@ export function MapNavigation() {
   const endBuilding = BUILDINGS.find((b) => b.id === parseInt(endId));
 
   return (
-    <div className="relative w-full h-full">
-      {/* ── Sidebar / Drawer ─────────────────────────────────────────────────── */}
+    <SidebarProvider
+      defaultOpen={true}
+      style={{ "--sidebar-width": "20rem" } as React.CSSProperties}
+      className="h-full w-full overflow-hidden"
+    >
+      {/* ── Sidebar ──────────────────────────────────────────────────────────── */}
       <NavigatorSidebar
         buildings={BUILDINGS}
         startId={startId}
@@ -964,16 +988,20 @@ export function MapNavigation() {
         onNavStart={() => setNavActive(true)}
         onClearRoute={clearRoute}
         onFlyTo={setFlyTarget}
-        drawerOpen={drawerOpen}
-        onDrawerOpenChange={setDrawerOpen}
       />
 
-      {/* ── Map ──────────────────────────────────────────────────────────────── */}
-      <div className="w-full h-full md:pl-80">
-        <Map center={CAMPUS_CENTER} zoom={17} className="!rounded-none">
+      {/* ── Map area ─────────────────────────────────────────────────────────── */}
+      <SidebarInset className="relative h-full overflow-hidden p-0 min-h-0">
+        <FloatingTrigger />
+
+        <Map
+          center={CAMPUS_CENTER}
+          zoom={17}
+          className="!rounded-none h-full w-full"
+        >
           <MapInteractionBlocker onDrag={() => {}} />
           <FlyToBuilding building={flyTarget} />
-
+          <MapResizer />
           <MapLayers
             defaultLayerGroups={["Buildings"]}
             defaultTileLayer="Satellite"
@@ -983,7 +1011,6 @@ export function MapNavigation() {
               url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
               attribution="Tiles &copy; Esri"
             />
-
             <MapLayerGroup name="Buildings">
               {BUILDINGS.map((b) => (
                 <MapMarker
@@ -1001,7 +1028,7 @@ export function MapNavigation() {
                   }
                   iconAnchor={[7, 7]}
                 >
-                  <MapPopup>
+                  <MapPopup className="border-none bg-black bg-opacity-0 backdrop-blur text-white rounded-b-lg">
                     <BuildingPopup
                       b={b}
                       onSetStart={() => setStartId(String(b.id))}
@@ -1058,7 +1085,7 @@ export function MapNavigation() {
             <MapZoomControl className="static" />
           </div>
         </Map>
-      </div>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
