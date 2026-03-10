@@ -17,14 +17,6 @@ export default async function MapDemoPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Header */}
-      {/* <header className="flex items-center justify-between px-6 py-6 border-b">
-        <Link href="/" className="hover:opacity-80 transition">
-          <RntuLogo />
-        </Link>
-      </header> */}
-
-      {/* Main */}
       <div className="flex h-svh w-full overflow-hidden">
         <MapNavigation />
       </div>
