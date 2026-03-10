@@ -1,39 +1,43 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, Lora, IBM_Plex_Mono } from "next/font/google";
 import "../index.css";
 import Providers from "@/components/providers";
 
-const geistSans = Geist({
-	variable: "--font-geist-sans",
-	subsets: ["latin"],
+const fontSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
 });
 
-const geistMono = Geist_Mono({
-	variable: "--font-geist-mono",
-	subsets: ["latin"],
+const fontSerif = Lora({
+  subsets: ["latin"],
+  variable: "--font-serif",
+});
+
+const fontMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  weight: "100",
 });
 
 export const metadata: Metadata = {
-	title: "rntu-visit",
-	description: "rntu-visit",
+  title: "rntu-visit",
+  description: "rntu-visit",
 };
 
 export default function RootLayout({
-	children,
+  children,
 }: Readonly<{
-	children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-	return (
-		<html lang="en" suppressHydrationWarning>
-			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-			>
-				<Providers>
-					<div className="grid grid-rows-[auto_1fr] h-svh">
-						{children}
-					</div>
-				</Providers>
-			</body>
-		</html>
-	);
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable} antialiased`}
+      >
+        <Providers>
+          <div className="grid grid-rows-[auto_1fr] h-svh">{children}</div>
+        </Providers>
+      </body>
+    </html>
+  );
 }
