@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   Map,
   MapLayerGroup,
@@ -801,6 +801,84 @@ function FlyToBuilding({ building }: { building: Building | null }) {
   return null;
 }
 
+// ─── Animated dot that loops along the active route ────────────────────────────
+function AnimatedPathMarker({ path }: { path: LatLngExpression[] }) {
+  const [markerPos, setMarkerPos] = useState<LatLngExpression>(path[0]!);
+  // Float progress: 0 → path.length-1, then wraps
+  const progressRef = useRef(0);
+
+  useEffect(() => {
+    if (path.length < 2) return;
+    const totalSegments = path.length - 1;
+    // Complete the full loop in ~8 seconds at 30fps
+    const speed = totalSegments / (8 * 30);
+
+    const id = setInterval(() => {
+      progressRef.current += speed;
+      if (progressRef.current >= totalSegments) progressRef.current = 0;
+
+      const seg = Math.floor(progressRef.current);
+      const t = progressRef.current - seg;
+      const p1 = path[seg] as [number, number];
+      const p2 = path[Math.min(seg + 1, totalSegments)] as [number, number];
+
+      setMarkerPos([p1[0] + (p2[0] - p1[0]) * t, p1[1] + (p2[1] - p1[1]) * t]);
+    }, 1000 / 30);
+
+    return () => clearInterval(id);
+  }, [path]);
+
+  return (
+    <MapMarker
+      position={markerPos}
+      icon={
+        <div className="relative flex items-center justify-center">
+          {/* Outer pulse ring */}
+          <span
+            className="absolute inline-flex rounded-full bg-emerald-400 opacity-60 animate-ping"
+            style={{ width: 22, height: 22 }}
+          />
+          {/* Inner solid dot */}
+          <span
+            className="relative inline-flex rounded-full bg-white border-[3px] border-emerald-500 shadow-lg"
+            style={{
+              width: 14,
+              height: 14,
+              boxShadow: "0 0 8px 2px rgba(34,197,94,0.6)",
+            }}
+          />
+        </div>
+      }
+      iconAnchor={[11, 11]}
+    />
+  );
+}
+
+// ─── Invalidate Leaflet tile cache after sidebar transition ────────────────────
+function MapResizer() {
+  const map = useMap();
+  const { open, openMobile, isMobile } = useSidebar();
+
+  useEffect(() => {
+    const t = setTimeout(() => map.invalidateSize(), 220);
+    return () => clearTimeout(t);
+  }, [open, openMobile, isMobile, map]);
+
+  return null;
+}
+
+// ─── Floating sidebar trigger (shown only when sidebar is closed) ──────────────
+function FloatingTrigger() {
+  const { open, openMobile, isMobile } = useSidebar();
+  const isVisible = isMobile ? !openMobile : !open;
+  if (!isVisible) return null;
+  return (
+    <div className="absolute top-3 left-3 z-[1001]">
+      <SidebarTrigger className="h-9 w-9 shadow-md border bg-background/95 hover:bg-background backdrop-blur-sm" />
+    </div>
+  );
+}
+
 // ─── Building Popup ────────────────────────────────────────────────────────────
 function BuildingPopup({
   b,
@@ -865,32 +943,6 @@ function BuildingPopup({
       </div>
     </>
   );
-}
-
-// ─── Floating sidebar trigger (shown only when sidebar is closed) ──────────────
-function FloatingTrigger() {
-  const { open, openMobile, isMobile } = useSidebar();
-  const isVisible = isMobile ? !openMobile : !open;
-  if (!isVisible) return null;
-  return (
-    <div className="absolute top-3 left-3 z-[1001]">
-      <SidebarTrigger className="h-9 w-9 shadow-md border bg-background/95 hover:bg-background backdrop-blur-sm" />
-    </div>
-  );
-}
-
-// ─── Invalidate Leaflet tile cache after sidebar transition ────────────────────
-function MapResizer() {
-  const map = useMap();
-  const { open, openMobile, isMobile } = useSidebar();
-
-  useEffect(() => {
-    // Wait for the CSS sidebar transition (~200ms) to finish before resizing
-    const t = setTimeout(() => map.invalidateSize(), 220);
-    return () => clearTimeout(t);
-  }, [open, openMobile, isMobile, map]);
-
-  return null;
 }
 
 // ─── Main Component ────────────────────────────────────────────────────────────
@@ -1040,21 +1092,67 @@ export function MapNavigation() {
             </MapLayerGroup>
           </MapLayers>
 
-          {routePath && (
+          {/* Route polylines */}
+          {routePath && navActive && (
+            <>
+              {/* Outer glow layer */}
+              <MapPolyline
+                positions={routePath}
+                pathOptions={{
+                  color: "#4ade80",
+                  weight: 18,
+                  opacity: 0.18,
+                  fill: false,
+                  lineCap: "round",
+                  lineJoin: "round",
+                }}
+              />
+              {/* Mid glow layer */}
+              <MapPolyline
+                positions={routePath}
+                pathOptions={{
+                  color: "#22c55e",
+                  weight: 12,
+                  opacity: 0.35,
+                  fill: false,
+                  lineCap: "round",
+                  lineJoin: "round",
+                }}
+              />
+              {/* Core solid line — bolder when active */}
+              <MapPolyline
+                positions={routePath}
+                className="fill-none"
+                pathOptions={{
+                  color: "#22c55e",
+                  weight: 8,
+                  opacity: 0.95,
+                  fill: false,
+                  lineCap: "round",
+                  lineJoin: "round",
+                }}
+              />
+            </>
+          )}
+
+          {routePath && !navActive && (
             <MapPolyline
               positions={routePath}
               className="fill-none"
               pathOptions={{
-                color: navActive ? "#22c55e" : "#3b82f6",
-                weight: navActive ? 7 : 5,
+                color: "#3b82f6",
+                weight: 5,
                 opacity: 0.9,
                 fill: false,
-                dashArray: navActive ? undefined : "12 8",
+                dashArray: "12 8",
                 lineCap: "round",
                 lineJoin: "round",
               }}
             />
           )}
+
+          {/* Animated dot — only shown while navigation is active */}
+          {routePath && navActive && <AnimatedPathMarker path={routePath} />}
 
           {startBuilding && (
             <MapMarker
