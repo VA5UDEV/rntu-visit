@@ -2,12 +2,12 @@
 
 import React, { useState } from "react";
 import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader as ShadcnSidebarHeader,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -33,7 +33,6 @@ import {
   MapPin,
   Route,
   Ruler,
-  Menu,
   Locate,
   CheckCircle2,
   Building2,
@@ -74,8 +73,6 @@ interface NavigatorSidebarProps {
   onNavStart: () => void;
   onClearRoute: () => void;
   onFlyTo: (building: Building) => void;
-  drawerOpen: boolean;
-  onDrawerOpenChange: (open: boolean) => void;
 }
 
 // ─── Type config ───────────────────────────────────────────────────────────────
@@ -142,50 +139,8 @@ function SectionLabel({
   );
 }
 
-// ─── Sidebar Header ────────────────────────────────────────────────────────────
-function SidebarHeader({
-  buildingCount,
-  navActive,
-}: {
-  buildingCount: number;
-  navActive: boolean;
-}) {
-  return (
-    <div className="flex items-center gap-2.5">
-      <div className="flex items-center justify-center h-7 w-7 rounded-lg bg-primary/10 flex-shrink-0">
-        <Navigation className="h-3.5 w-3.5 text-primary" />
-      </div>
-      <div className="flex-1 min-w-0">
-        <h2 className="font-semibold text-sm leading-none">Campus Navigator</h2>
-        <p className="text-[10px] text-muted-foreground mt-0.5">
-          {buildingCount} locations mapped
-        </p>
-      </div>
-      {navActive && (
-        <Badge className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 text-[10px] font-semibold px-1.5">
-          <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse" />
-          Live
-        </Badge>
-      )}
-    </div>
-  );
-}
-
-// ─── Sidebar Footer ────────────────────────────────────────────────────────────
-function SidebarFooter() {
-  return (
-    <div className="flex-shrink-0 border-t border-border/60 px-3 py-2.5 flex items-center justify-between">
-      <span className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-        <Link href="/" className="hover:opacity-80 transition">
-          <RntuLogo />
-        </Link>
-      </span>
-      <UserMenu />
-    </div>
-  );
-}
-
-function SidebarContent({
+// ─── Sidebar inner content (search, route planner, building list) ──────────────
+function NavigatorContent({
   buildings,
   startId,
   endId,
@@ -198,7 +153,7 @@ function SidebarContent({
   onNavStart,
   onClearRoute,
   onFlyTo,
-}: Omit<NavigatorSidebarProps, "drawerOpen" | "onDrawerOpenChange">) {
+}: NavigatorSidebarProps) {
   const [search, setSearch] = useState("");
   const filtered = buildings.filter((b) =>
     b.name.toLowerCase().includes(search.toLowerCase()),
@@ -479,84 +434,46 @@ function SidebarContent({
 
 // ─── Main exported component ───────────────────────────────────────────────────
 export function NavigatorSidebar(props: NavigatorSidebarProps) {
-  const {
-    buildings,
-    navActive,
-    drawerOpen,
-    onDrawerOpenChange,
-    onFlyTo,
-    onNavStart,
-    ...contentProps
-  } = props;
-
-  const headerProps = { buildingCount: buildings.length, navActive };
-
-  const sharedContentProps = {
-    buildings,
-    navActive,
-    onFlyTo: (b: Building) => {
-      onFlyTo(b);
-      onDrawerOpenChange(false);
-    },
-    onNavStart: () => {
-      onNavStart();
-      onDrawerOpenChange(false);
-    },
-    ...contentProps,
-  };
+  const { buildings, navActive } = props;
 
   return (
-    <>
-      {/* ── Desktop: persistent sidebar ──────────────────────────────────────── */}
-      <aside className="absolute top-0 left-0 h-full w-80 z-[1000] hidden md:flex flex-col bg-background/97 backdrop-blur-sm border-r shadow-sm">
-        <div className="px-4 py-3.5 border-b flex-shrink-0">
-          <SidebarHeader {...headerProps} />
+    <Sidebar collapsible="offcanvas" className="border-r border-border/60">
+      {/* Header */}
+      <ShadcnSidebarHeader className="px-4 py-3.5 border-b border-border/60">
+        <div className="flex items-center gap-2.5">
+          <div className="flex items-center justify-center h-7 w-7 rounded-lg bg-primary/10 flex-shrink-0">
+            <Navigation className="h-3.5 w-3.5 text-primary" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h2 className="font-semibold text-sm leading-none">
+              Campus Navigator
+            </h2>
+            <p className="text-[10px] text-muted-foreground mt-0.5">
+              {buildings.length} locations mapped
+            </p>
+          </div>
+          {navActive && (
+            <Badge className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 text-[10px] font-semibold px-1.5">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse" />
+              Live
+            </Badge>
+          )}
+          <SidebarTrigger className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-muted/60 flex-shrink-0" />
         </div>
-        <div className="flex-1 min-h-0 overflow-y-auto">
-          <SidebarContent {...sharedContentProps} />
-        </div>
-        <SidebarFooter />
-      </aside>
+      </ShadcnSidebarHeader>
 
-      {/* ── Mobile: Drawer triggered by floating button ───────────────────────── */}
-      <div className="absolute top-13 right-3 z-[1001] md:hidden">
-        <Drawer
-          direction="left"
-          open={drawerOpen}
-          onOpenChange={onDrawerOpenChange}
-        >
-          <DrawerTrigger asChild>
-            <Button
-              size="icon"
-              variant="secondary"
-              className="shadow-md border h-9 w-9"
-            >
-              <Menu className="h-4 w-4" />
-            </Button>
-          </DrawerTrigger>
+      {/* Scrollable content */}
+      <SidebarContent className="overflow-y-auto">
+        <NavigatorContent {...props} />
+      </SidebarContent>
 
-          <DrawerContent
-            className="h-full w-80 max-w-[85vw] flex flex-col rounded-none rounded-r-2xl border-r"
-            style={{ left: 0, right: "auto", top: 0, bottom: 0 }}
-          >
-            <div className="hidden" />
-
-            <DrawerHeader className="px-4 py-3 border-b flex-shrink-0">
-              <DrawerTitle asChild>
-                <div>
-                  <SidebarHeader {...headerProps} />
-                </div>
-              </DrawerTitle>
-            </DrawerHeader>
-
-            <div className="flex-1 min-h-0 overflow-y-auto">
-              <SidebarContent {...sharedContentProps} />
-            </div>
-
-            <SidebarFooter />
-          </DrawerContent>
-        </Drawer>
-      </div>
-    </>
+      {/* Footer */}
+      <SidebarFooter className="border-t border-border/60 px-3 py-2.5 flex flex-row items-center justify-between">
+        <Link href="/" className="hover:opacity-80 transition">
+          <RntuLogo />
+        </Link>
+        <UserMenu />
+      </SidebarFooter>
+    </Sidebar>
   );
 }
