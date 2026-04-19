@@ -897,7 +897,7 @@ function BuildingPopup({
             fill
             src={b.image}
             alt={b.name}
-            className="h-64 w-full object-cover mask-[linear-gradient(to_bottom,black_50%,transparent_100%)]"
+            className="h-64 w-full object-cover mask-b-from-60% to-100%"
           />
         </div>
         <div className="p-2.5 min-w-[160px]">
@@ -909,7 +909,7 @@ function BuildingPopup({
               {TYPE_CONFIG[b.type]?.label ?? b.type}
             </Badge>
           </div>
-          <div className="flex items-center justify-center gap-2 mb-1.5">
+          <div className="flex items-center justify-center gap-1 mb-1.5">
             <span
               className="h-2.5 w-2.5 rounded-full shrink-0"
               style={{ backgroundColor: b.color }}
@@ -918,26 +918,18 @@ function BuildingPopup({
           </div>
           <Separator className="my-1.5 dark:bg-transparent backdrop-blur" />
           <div className="flex gap-1.5">
-            <div className="flex-1 items-center gap-2 bg-white/20 backdrop-blur-md rounded-md border border-white/30 cursor-pointer transition-all duration-300 hover:bg-white/40 hover:border-white/50 hover:shadow-sm">
-              <Button
-                size="sm"
-                variant="link"
-                className="h-7 text-white text-[11px] px-2"
-                onClick={onSetStart}
-              >
-                Set Start
-              </Button>
-            </div>
-            <div className="flex-1 items-center gap-2 bg-white/20 backdrop-blur-md rounded-md border border-white/30 cursor-pointer transition-all duration-300 hover:bg-white/40 hover:border-white/50 hover:shadow-sm">
-              <Button
-                size="sm"
-                variant="link"
-                className="h-7 text-white text-[11px] px-2"
-                onClick={onSetEnd}
-              >
-                Set End
-              </Button>
-            </div>
+            <Button
+              onClick={onSetStart}
+              className="flex-1 h-7 text-white text-[11px] bg-white/20 backdrop-blur-md border border-white/30 hover:bg-white/40 hover:border-white/50"
+            >
+              Set Start
+            </Button>
+            <Button
+              onClick={onSetEnd}
+              className="flex-1 h-7 text-white text-[11px] bg-white/20 backdrop-blur-md border border-white/30 hover:bg-white/40 hover:border-white/50"
+            >
+              Set End
+            </Button>
           </div>
         </div>
       </div>
