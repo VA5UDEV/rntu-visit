@@ -2,9 +2,6 @@ import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { auth } from "@rntu-visit/auth";
 import { MapNavigation } from "@/components/map-navigation";
-import { RntuLogo } from "@/components/rntu-logo";
-
-import Link from "next/link";
 
 export default async function MapDemoPage() {
   const session = await auth.api.getSession({
